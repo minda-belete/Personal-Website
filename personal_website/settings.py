@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from decouple import config, Csv
+import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -81,12 +84,23 @@ WSGI_APPLICATION = "personal_website.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# Use PostgreSQL in production, SQLite in development
+if os.getenv('GAE_APPLICATION', None):
+    # Running on production App Engine, use Cloud SQL
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=config('DATABASE_URL', default=''),
+            conn_max_age=600
+        )
     }
-}
+else:
+    # Running locally
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
@@ -123,13 +137,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# WhiteNoise configuration for static files
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# Google Cloud Storage for media files in production
+if os.getenv('GAE_APPLICATION', None):
+    GS_BUCKET_NAME = config('GS_BUCKET_NAME', default='')
+    if GS_BUCKET_NAME:
+        DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+        GS_PROJECT_ID = config('GS_PROJECT_ID', default='')
+        MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 
 # TinyMCE settings
 TINYMCE_DEFAULT_CONFIG = {
@@ -180,3 +205,12 @@ GITHUB_USERNAME = config('GITHUB_USERNAME', default='minda-belete')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Security settings for production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
