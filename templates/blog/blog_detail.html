@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} - Blog{% endblock %}
+
+{% block meta_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
+{% block meta_keywords %}{{ post.meta_keywords }}{% endblock %}
+
+{% block content %}
+<article class="section" style="margin-top: 70px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Post Header -->
+                <header class="mb-4" data-aos="fade-up">
+                    {% if post.category %}
+                    <span class="badge mb-2" style="background-color: {{ post.category.color }}">
+                        {{ post.category.name }}
+                    </span>
+                    {% endif %}
+                    <h1 class="display-4">{{ post.title }}</h1>
+                    {% if post.subtitle %}
+                    <p class="lead text-muted">{{ post.subtitle }}</p>
+                    {% endif %}
+                    <div class="blog-meta">
+                        <i class="far fa-calendar"></i> {{ post.published_at|date:"F d, Y" }}
+                        <i class="far fa-clock ms-3"></i> {{ post.reading_time }} min read
+                        <i class="far fa-eye ms-3"></i> {{ post.views_count }} views
+                    </div>
+                </header>
+
+                <!-- Featured Image/Video -->
+                {% if post.featured_image %}
+                <div class="mb-4" data-aos="fade-up">
+                    <img src="{{ post.featured_image.url }}" class="img-fluid rounded" alt="{{ post.title }}">
+                </div>
+                {% endif %}
+
+                {% if post.featured_video_url %}
+                <div class="ratio ratio-16x9 mb-4" data-aos="fade-up">
+                    <iframe src="{{ post.featured_video_url }}" allowfullscreen></iframe>
+                </div>
+                {% endif %}
+
+                <!-- Post Content -->
+                <div class="post-content" data-aos="fade-up">
+                    {{ post.content|safe }}
+                </div>
+
+                <!-- Code Snippets -->
+                {% for snippet in code_snippets %}
+                <div class="code-snippet" data-aos="fade-up">
+                    <div class="code-header">
+                        <span>
+                            {% if snippet.title %}{{ snippet.title }}{% else %}Code Snippet{% endif %}
+                            <span class="badge bg-secondary ms-2">{{ snippet.get_language_display }}</span>
+                        </span>
+                        <button class="copy-btn" data-code-id="{{ snippet.id }}">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-{{ snippet.language }}">{{ snippet.code }}</code></pre>
+                    {% if snippet.description %}
+                    <p class="mt-2 text-muted">{{ snippet.description }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <!-- Interactive Maps -->
+                {% for map in maps %}
+                <div class="map-container" data-aos="fade-up">
+                    <h4>{{ map.title }}</h4>
+                    {% if map.description %}
+                    <p>{{ map.description }}</p>
+                    {% endif %}
+                    <div class="interactive-map" 
+                         id="map-{{ map.id }}"
+                         data-lat="{{ map.center_latitude }}"
+                         data-lng="{{ map.center_longitude }}"
+                         data-zoom="{{ map.zoom_level }}"
+                         data-geojson="{{ map.geojson_data }}">
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Tags -->
+                {% if post.tags.all %}
+                <div class="blog-tags mt-4" data-aos="fade-up">
+                    <strong>Tags:</strong>
+                    {% for tag in post.tags.all %}
+                    <a href="{% url 'blog:tag' tag.slug %}" class="tag">{{ tag.name }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Share Buttons -->
+                <div class="mt-4 pt-4 border-top" data-aos="fade-up">
+                    <strong>Share this post:</strong>
+                    <div class="d-flex gap-2 mt-2">
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}" 
+                           target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" 
+                           target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                           target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="mt-5 pt-4 border-top" data-aos="fade-up">
+                    <h3>Comments ({{ comments.count }})</h3>
+                    
+                    <!-- Comment Form -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5>Leave a Comment</h5>
+                            <form method="post" action="{% url 'blog:add_comment' post.slug %}" class="needs-validation" novalidate>
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Name *</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="website" class="form-label">Website (optional)</label>
+                                    <input type="url" class="form-control" id="website" name="website">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">Comment *</label>
+                                    <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit Comment</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Display Comments -->
+                    {% for comment in comments %}
+                    <div class="comment">
+                        <div class="d-flex justify-content-between">
+                            <strong class="comment-author">{{ comment.name }}</strong>
+                            <span class="comment-date">{{ comment.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        <p class="mt-2">{{ comment.content }}</p>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">No comments yet. Be the first to comment!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Posts -->
+        {% if related_posts %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">Related Posts</h3>
+            </div>
+            {% for related in related_posts %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if related.featured_image %}
+                    <img src="{{ related.featured_image.url }}" class="card-img-top" alt="{{ related.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ related.title }}</h5>
+                        <p class="card-text">{{ related.excerpt|truncatewords:15 }}</p>
+                        <a href="{% url 'blog:post_detail' related.slug %}" class="btn btn-sm btn-outline-primary">
+                            Read More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

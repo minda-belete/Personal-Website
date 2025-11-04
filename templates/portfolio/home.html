@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ homepage.hero_title }} - Professional Portfolio{% endblock %}
+
+{% block meta_description %}{{ homepage.hero_description|striptags|truncatewords:30 }}{% endblock %}
+
+{% block meta_keywords %}{{ homepage.hero_title }}, research, publications, portfolio, computer science, AI, machine learning{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8" data-aos="fade-right">
+                <h1>{{ homepage.hero_title }}</h1>
+                <div class="lead mb-4">{{ homepage.hero_description|safe }}</div>
+                {% if homepage.cv_file %}
+                <div class="d-flex gap-3 mt-4">
+                    <a href="{{ homepage.cv_file.url }}" target="_blank" class="btn btn-primary btn-lg" style="z-index: 10; position: relative;">
+                        <i class="fas fa-file-pdf"></i> {{ homepage.cta_primary_text }}
+                    </a>
+                </div>
+                {% else %}
+                <div class="d-flex gap-3 mt-4">
+                    <a href="#" class="btn btn-primary btn-lg" style="z-index: 10; position: relative;">
+                        <i class="fas fa-file-pdf"></i> View CV
+                    </a>
+                    <small class="text-white-50 align-self-center">(Upload CV in admin panel)</small>
+                </div>
+                {% endif %}
+                <div class="mt-4">
+                    {% if homepage.github_url %}
+                    <a href="{{ homepage.github_url }}" target="_blank" class="text-white me-3">
+                        <i class="fab fa-github fa-2x"></i>
+                    </a>
+                    {% endif %}
+                    {% if homepage.linkedin_url %}
+                    <a href="{{ homepage.linkedin_url }}" target="_blank" class="text-white me-3">
+                        <i class="fab fa-linkedin fa-2x"></i>
+                    </a>
+                    {% endif %}
+                    {% if homepage.twitter_url %}
+                    <a href="{{ homepage.twitter_url }}" target="_blank" class="text-white me-3">
+                        <i class="fab fa-twitter fa-2x"></i>
+                    </a>
+                    {% endif %}
+                    {% if homepage.email %}
+                    <a href="mailto:{{ homepage.email }}" class="text-white me-3">
+                        <i class="fas fa-envelope fa-2x"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% if homepage.hero_image %}
+            <div class="col-lg-4 text-center" data-aos="fade-left">
+                <img src="{{ homepage.hero_image.url }}" alt="Profile" class="hero-image">
+            </div>
+            {% elif profile.profile_image %}
+            <div class="col-lg-4 text-center" data-aos="fade-left">
+                <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="hero-image">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+
+<!-- Featured Research -->
+{% if research %}
+<section class="section">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Featured Research</h2>
+        <div class="row">
+            {% for item in research %}
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="card research-card">
+                    {% if item.thumbnail %}
+                    <img src="{{ item.thumbnail.url }}" class="card-img-top" alt="{{ item.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <span class="badge bg-primary mb-2">{{ item.get_research_type_display }}</span>
+                        <h5 class="card-title">{{ item.title }}</h5>
+                        <p class="research-authors">{{ item.authors }}</p>
+                        <p class="card-text">{{ item.abstract|truncatewords:30 }}</p>
+                        <a href="{% url 'portfolio:research_detail' item.pk %}" class="btn btn-sm btn-outline-primary">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'portfolio:research' %}" class="btn btn-primary">View All Research</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Recent Blog Posts -->
+{% if recent_posts %}
+<section class="section bg-light">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Latest Blog Posts</h2>
+        <div class="row">
+            {% for post in recent_posts %}
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="card blog-card">
+                    {% if post.featured_image %}
+                    <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        {% if post.category %}
+                        <span class="badge" style="background-color: {{ post.category.color }}">
+                            {{ post.category.name }}
+                        </span>
+                        {% endif %}
+                        <h5 class="card-title mt-2">{{ post.title }}</h5>
+                        <div class="blog-meta">
+                            <i class="far fa-calendar"></i> {{ post.published_at|date:"M d, Y" }}
+                            <i class="far fa-clock ms-3"></i> {{ post.reading_time }} min read
+                            <i class="far fa-eye ms-3"></i> {{ post.views_count }} views
+                        </div>
+                        <p class="card-text">{{ post.excerpt|truncatewords:20 }}</p>
+                        <a href="{% url 'blog:post_detail' post.slug %}" class="btn btn-sm btn-outline-primary">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'blog:post_list' %}" class="btn btn-primary">View All Posts</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured GitHub Repositories -->
+{% if featured_repos %}
+<section class="section">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Featured Projects</h2>
+        <div class="row">
+            {% for repo in featured_repos %}
+            <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="card repo-card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fab fa-github"></i> {{ repo.name }}
+                        </h5>
+                        <p class="card-text">{{ repo.display_description|truncatewords:25 }}</p>
+                        {% if repo.primary_language %}
+                        <span class="language-badge">{{ repo.primary_language }}</span>
+                        {% endif %}
+                        <div class="repo-stats">
+                            <span class="repo-stat">
+                                <i class="fas fa-star text-warning"></i> {{ repo.stars_count }}
+                            </span>
+                            <span class="repo-stat">
+                                <i class="fas fa-code-branch"></i> {{ repo.forks_count }}
+                            </span>
+                            <span class="repo-stat">
+                                <i class="far fa-eye"></i> {{ repo.watchers_count }}
+                            </span>
+                        </div>
+                        <a href="{{ repo.url }}" target="_blank" class="btn btn-sm btn-outline-dark mt-3">
+                            View on GitHub <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'github:repository_list' %}" class="btn btn-primary">View All Projects</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Experience Timeline -->
+{% if experience %}
+<section class="section bg-light">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Experience</h2>
+        <div class="timeline">
+            {% for exp in experience %}
+            <div class="timeline-item" data-aos="fade-up">
+                <div class="timeline-content">
+                    <h5>{{ exp.title }}</h5>
+                    <h6 class="text-primary">{{ exp.company }}</h6>
+                    <p class="text-muted">
+                        <i class="far fa-calendar"></i>
+                        {{ exp.start_date|date:"M Y" }} - 
+                        {% if exp.end_date %}{{ exp.end_date|date:"M Y" }}{% else %}Present{% endif %}
+                    </p>
+                    <p>{{ exp.description|truncatewords:30 }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'portfolio:experience' %}" class="btn btn-primary">View Full Experience</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

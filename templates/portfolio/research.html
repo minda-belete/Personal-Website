@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Research & Publications - Professional Portfolio{% endblock %}
+
+{% block content %}
+<section class="section" style="margin-top: 70px; padding-top: 80px;">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h1 class="section-title mb-3">
+                <i class="fas fa-flask"></i> {{ research_settings.page_title|default:"Research & Publications" }}
+            </h1>
+            <div class="lead text-muted" style="max-width: 700px; margin: 0 auto;">
+                {{ research_settings.page_description|safe|default:"Explore my research contributions, publications, and academic work." }}
+            </div>
+        </div>
+
+        <!-- Featured Research -->
+        {% if featured_research %}
+        <div class="mb-5">
+            <h3 class="mb-4" data-aos="fade-up">Featured Research</h3>
+            <div class="row">
+                {% for item in featured_research %}
+                <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                    <div class="card research-card h-100">
+                        {% if item.thumbnail %}
+                        <img src="{{ item.thumbnail.url }}" class="card-img-top" alt="{{ item.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <span class="badge bg-warning text-dark mb-2">Featured</span>
+                            <span class="badge bg-primary mb-2">{{ item.get_research_type_display }}</span>
+                            <h5 class="card-title">{{ item.title }}</h5>
+                            <p class="research-authors">{{ item.authors }}</p>
+                            {% if item.publication_venue %}
+                            <p class="text-muted small">
+                                <i class="fas fa-book"></i> {{ item.publication_venue }}
+                            </p>
+                            {% endif %}
+                            {% if item.publication_date %}
+                            <p class="text-muted small">
+                                <i class="far fa-calendar"></i> {{ item.publication_date|date:"M Y" }}
+                            </p>
+                            {% endif %}
+                            <p class="card-text">{{ item.abstract|truncatewords:40 }}</p>
+                            {% if item.doi %}
+                            <p class="mb-2">
+                                <strong>DOI:</strong> <a href="https://doi.org/{{ item.doi }}" target="_blank" class="doi-link">{{ item.doi }}</a>
+                            </p>
+                            {% endif %}
+                            <div class="mt-3">
+                                {% if item.url %}
+                                <a href="{{ item.url }}" target="_blank" class="btn btn-sm btn-outline-primary me-2">
+                                    <i class="fas fa-external-link-alt"></i> View Paper
+                                </a>
+                                {% endif %}
+                                {% if item.pdf_file %}
+                                <a href="{{ item.pdf_file.url }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                    <i class="fas fa-file-pdf"></i> Download PDF
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- All Research -->
+        {% if research %}
+        <h3 class="mb-4" data-aos="fade-up">{{ research_settings.all_research_heading|default:"All Publications" }}</h3>
+        <div class="row">
+            {% for item in research %}
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:50 }}">
+                <div class="card research-card h-100">
+                    {% if item.thumbnail %}
+                    <img src="{{ item.thumbnail.url }}" class="card-img-top" alt="{{ item.title }}">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <span class="badge bg-primary mb-2" style="width: fit-content;">{{ item.get_research_type_display }}</span>
+                        <h6 class="card-title">{{ item.title }}</h6>
+                        <p class="research-authors small">{{ item.authors }}</p>
+                        {% if item.publication_venue %}
+                        <p class="text-muted small mb-1">
+                            <i class="fas fa-book"></i> {{ item.publication_venue }}
+                        </p>
+                        {% endif %}
+                        {% if item.publication_date %}
+                        <p class="text-muted small mb-2">
+                            <i class="far fa-calendar"></i> {{ item.publication_date|date:"M Y" }}
+                        </p>
+                        {% endif %}
+                        <p class="card-text small">{{ item.abstract|truncatewords:25 }}</p>
+                        {% if item.tags %}
+                        <div class="mt-2">
+                            <span class="badge bg-secondary">{{ item.tags }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="mt-auto pt-3">
+                            {% if item.url %}
+                            <a href="{{ item.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-external-link-alt"></i> View
+                            </a>
+                            {% endif %}
+                            {% if item.pdf_file %}
+                            <a href="{{ item.pdf_file.url }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-flask fa-5x text-muted mb-3"></i>
+            <p class="lead text-muted">No research publications yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,159 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.tiny.cloud/1/tdnv7ti0zwmq3pa0t8zbrzbko6i20vkoyu82c5pfu07qbe5b/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    tinymce.init({
+        selector: '#intro_bio',
+        height: 250,
+        menubar: false,
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'charmap', 'preview',
+            'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'table', 'help', 'wordcount'
+        ],
+        toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | removeformat | code',
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; }'
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- About Page Bio Section -->
+<div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+    <h2 style="margin-top: 0; color: #2c3e50; font-size: 18px; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 15px;">
+        <i class="fas fa-user-circle"></i> About Page Introduction Bio
+    </h2>
+    <p style="color: #6c757d; margin-bottom: 15px; font-size: 13px;">
+        This bio appears at the top of your About page, before the timeline. Use it to introduce yourself to visitors.
+    </p>
+    
+    <form method="post" enctype="multipart/form-data" style="background: white; padding: 20px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 15px;">
+            <label for="intro_bio" style="display: block; font-weight: 600; margin-bottom: 5px; color: #2c3e50;">
+                Introduction Bio:
+            </label>
+            <textarea id="intro_bio" 
+                      name="intro_bio" 
+                      rows="5"
+                      style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">{{ about_page_settings.intro_bio }}</textarea>
+            <small style="display: block; margin-top: 5px; color: #6c757d;">Rich text editor with formatting options - this will appear before your timeline entries</small>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="profile_image" style="display: block; font-weight: 600; margin-bottom: 5px; color: #2c3e50;">
+                Profile Image:
+            </label>
+            {% if about_page_settings.profile_image %}
+            <div style="margin-bottom: 10px;">
+                <img src="{{ about_page_settings.profile_image.url }}" style="max-width: 150px; border-radius: 50%; border: 3px solid #3498db;">
+                <p style="margin-top: 5px; font-size: 12px; color: #6c757d;">Current image</p>
+            </div>
+            {% endif %}
+            <input type="file" 
+                   id="profile_image" 
+                   name="profile_image" 
+                   accept="image/*"
+                   style="padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
+            <small style="display: block; margin-top: 5px; color: #6c757d;">Upload your profile photo (appears on About page)</small>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+                <label for="github_url" style="display: block; font-weight: 600; margin-bottom: 5px; color: #2c3e50;">
+                    <i class="fab fa-github"></i> GitHub URL:
+                </label>
+                <input type="url" 
+                       id="github_url" 
+                       name="github_url" 
+                       value="{{ about_page_settings.github_url }}"
+                       style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;"
+                       placeholder="https://github.com/username">
+            </div>
+            
+            <div>
+                <label for="linkedin_url" style="display: block; font-weight: 600; margin-bottom: 5px; color: #2c3e50;">
+                    <i class="fab fa-linkedin"></i> LinkedIn URL:
+                </label>
+                <input type="url" 
+                       id="linkedin_url" 
+                       name="linkedin_url" 
+                       value="{{ about_page_settings.linkedin_url }}"
+                       style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;"
+                       placeholder="https://linkedin.com/in/username">
+            </div>
+            
+            <div>
+                <label for="twitter_url" style="display: block; font-weight: 600; margin-bottom: 5px; color: #2c3e50;">
+                    <i class="fab fa-twitter"></i> Twitter/X URL:
+                </label>
+                <input type="url" 
+                       id="twitter_url" 
+                       name="twitter_url" 
+                       value="{{ about_page_settings.twitter_url }}"
+                       style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;"
+                       placeholder="https://twitter.com/username">
+            </div>
+            
+            <div>
+                <label for="google_scholar_url" style="display: block; font-weight: 600; margin-bottom: 5px; color: #2c3e50;">
+                    <i class="fas fa-graduation-cap"></i> Google Scholar URL:
+                </label>
+                <input type="url" 
+                       id="google_scholar_url" 
+                       name="google_scholar_url" 
+                       value="{{ about_page_settings.google_scholar_url }}"
+                       style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;"
+                       placeholder="https://scholar.google.com/...">
+            </div>
+            
+            <div>
+                <label for="orcid_url" style="display: block; font-weight: 600; margin-bottom: 5px; color: #2c3e50;">
+                    <i class="fas fa-id-card"></i> ORCID URL:
+                </label>
+                <input type="url" 
+                       id="orcid_url" 
+                       name="orcid_url" 
+                       value="{{ about_page_settings.orcid_url }}"
+                       style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;"
+                       placeholder="https://orcid.org/...">
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="cv_file" style="display: block; font-weight: 600; margin-bottom: 5px; color: #2c3e50;">
+                CV File (PDF):
+            </label>
+            {% if about_page_settings.cv_file %}
+            <div style="margin-bottom: 10px;">
+                <a href="{{ about_page_settings.cv_file.url }}" target="_blank" style="color: #3498db; text-decoration: none;">
+                    <i class="fas fa-file-pdf"></i> Current CV file
+                </a>
+            </div>
+            {% endif %}
+            <input type="file" 
+                   id="cv_file" 
+                   name="cv_file" 
+                   accept=".pdf"
+                   style="padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
+            <small style="display: block; margin-top: 5px; color: #6c757d;">Upload your CV in PDF format</small>
+        </div>
+        
+        <button type="submit" 
+                name="save_about_settings" 
+                value="1"
+                style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px;">
+            <i class="fas fa-save"></i> Save All Settings
+        </button>
+    </form>
+</div>
+
+<!-- Original Timeline Entries List -->
+{{ block.super }}
+{% endblock %}

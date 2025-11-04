@@ -1,0 +1,52 @@
+Stata|100|fas fa-chart-bar|PROGRAMMING
+Python|100|fab fa-python|PROGRAMMING
+R|100|fab fa-r-project|PROGRAMMING
+QGIS|100|fas fa-globe-americas|GIS
+GeoPandas|100|fab fa-python|GIS
+Pandas|100|fab fa-python|DATA_ANALYSIS
+Unity|80|fab fa-unity|PROGRAMMING
+C#|80|fas fa-code|PROGRAMMING
+SQL|95|fas fa-database|PROGRAMMING
+Git|95|fab fa-git-alt|PROGRAMMING
+Jupyter|90|fab fa-python|PROGRAMMING
+LaTeX|85|fas fa-file-code|PROGRAMMING
+Excel|90|fas fa-file-excel|DATA_ANALYSIS
+Tableau|85|fas fa-chart-pie|DATA_ANALYSIS
+Power BI|80|fas fa-chart-line|DATA_ANALYSIS
+NumPy|95|fab fa-python|DATA_ANALYSIS
+Matplotlib|90|fab fa-python|DATA_ANALYSIS
+Seaborn|90|fab fa-python|DATA_ANALYSIS
+Plotly|85|fab fa-python|DATA_ANALYSIS
+SciPy|85|fab fa-python|DATA_ANALYSIS
+Scikit-learn|85|fab fa-python|MACHINE_LEARNING
+TensorFlow|75|fas fa-brain|MACHINE_LEARNING
+PyTorch|75|fas fa-fire|MACHINE_LEARNING
+Keras|80|fas fa-network-wired|MACHINE_LEARNING
+ArcGIS|85|fas fa-layer-group|GIS
+OSMnx|90|fab fa-python|GIS
+Folium|85|fab fa-python|GIS
+Rasterio|80|fab fa-python|GIS
+Shapely|85|fab fa-python|GIS
+Pricing Strategy|90|fas fa-dollar-sign|MICROECONOMICS
+Product Marketing|85|fas fa-bullhorn|MICROECONOMICS
+Market Research|85|fas fa-search|MICROECONOMICS
+Consumer Behavior|85|fas fa-shopping-cart|MICROECONOMICS
+Competitive Analysis|80|fas fa-chart-line|MICROECONOMICS
+Game Theory|85|fas fa-chess|MICROECONOMICS
+Supply & Demand|90|fas fa-balance-scale|MICROECONOMICS
+Linear Algebra|95|fas fa-square-root-alt|MATHEMATICS
+Matrix Theory|90|fas fa-th|MATHEMATICS
+Calculus|95|fas fa-infinity|MATHEMATICS
+Differential Equations|85|fas fa-calculator|MATHEMATICS
+Statistics|95|fas fa-chart-bar|MATHEMATICS
+Probability Theory|90|fas fa-dice|MATHEMATICS
+Optimization|85|fas fa-chart-area|MATHEMATICS
+Data Cleaning|95|fas fa-broom|DATA_ANALYSIS
+Data Manipulation|95|fas fa-database|DATA_ANALYSIS
+Statistical Analysis|95|fas fa-chart-line|DATA_ANALYSIS
+Data Visualization|95|fas fa-chart-pie|DATA_ANALYSIS
+Animation|85|fas fa-film|DATA_ANALYSIS
+Report Writing|90|fas fa-file-alt|DATA_ANALYSIS
+Presentation|90|fas fa-presentation|DATA_ANALYSIS
+Storytelling|85|fas fa-book-open|DATA_ANALYSIS
+Dashboard Design|85|fas fa-tachometer-alt|DATA_ANALYSIS

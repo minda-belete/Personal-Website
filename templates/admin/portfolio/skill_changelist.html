@@ -1,0 +1,36 @@
+{% extends "admin/change_list.html" %}
+
+{% block content %}
+<div style="background: #f8f9fa; padding: 20px; margin-bottom: 20px; border-radius: 8px; border: 2px solid #e9ecef;">
+    <h2 style="margin-top: 0; color: #1a73e8;">
+        <i class="fas fa-plus-circle"></i> Bulk Add Skills
+    </h2>
+    <form method="post" style="margin-top: 15px;">
+        {% csrf_token %}
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Category:</label>
+            <select name="bulk_category" required style="width: 100%; max-width: 300px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                <option value="">Select Category</option>
+                <option value="HARD">Hard Skills</option>
+                <option value="SOFT">Soft Skills</option>
+                <option value="HOBBIES">Hobbies</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Skills (one per line):</label>
+            <textarea name="bulk_skills_text" rows="8" required 
+                      placeholder="Examples:&#10;Python|90|fab fa-python&#10;JavaScript|85|fab fa-js&#10;React|80|fab fa-react&#10;Django|85&#10;PostgreSQL|75"
+                      style="width: 100%; max-width: 600px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace;"></textarea>
+            <small style="display: block; color: #666; margin-top: 5px;">
+                Format: <code>skill_name</code> or <code>skill_name|proficiency</code> or <code>skill_name|proficiency|icon</code>
+            </small>
+        </div>
+        <button type="submit" name="bulk_add" 
+                style="background: #1a73e8; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            <i class="fas fa-plus"></i> Add Skills
+        </button>
+    </form>
+</div>
+
+{{ block.super }}
+{% endblock %}

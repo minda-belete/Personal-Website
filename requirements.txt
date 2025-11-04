@@ -1,0 +1,7 @@
+Django==4.2.7
+Pillow==10.1.0
+django-tinymce==3.7.1
+django-taggit==5.0.1
+requests==2.31.0
+python-dateutil==2.8.2
+python-decouple==3.8

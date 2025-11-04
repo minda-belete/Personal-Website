@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}GitHub Repositories - Portfolio{% endblock %}
+
+{% block content %}
+<section class="section" style="margin-top: 70px;">
+    <div class="container">
+        <h1 class="section-title" data-aos="fade-up">
+            <i class="fab fa-github"></i> GitHub Repositories
+        </h1>
+
+        <!-- Filters and Sort -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <select class="form-select" onchange="window.location.href='?language='+this.value">
+                    <option value="">All Languages</option>
+                    {% for lang in languages %}
+                    <option value="{{ lang }}" {% if request.GET.language == lang %}selected{% endif %}>
+                        {{ lang }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <select class="form-select" onchange="window.location.href='?sort='+this.value">
+                    <option value="-stars_count" {% if request.GET.sort == '-stars_count' or not request.GET.sort %}selected{% endif %}>
+                        Most Stars
+                    </option>
+                    <option value="-forks_count" {% if request.GET.sort == '-forks_count' %}selected{% endif %}>
+                        Most Forks
+                    </option>
+                    <option value="-updated_at" {% if request.GET.sort == '-updated_at' %}selected{% endif %}>
+                        Recently Updated
+                    </option>
+                    <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>
+                        Name (A-Z)
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Repository Grid -->
+        <div class="row">
+            {% for repo in repositories %}
+            <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:50 }}">
+                <div class="card repo-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">
+                                <i class="fab fa-github"></i> {{ repo.name }}
+                            </h5>
+                            {% if repo.featured %}
+                            <span class="badge bg-warning text-dark">Featured</span>
+                            {% endif %}
+                        </div>
+                        
+                        <p class="text-muted small mb-2">{{ repo.full_name }}</p>
+                        <p class="card-text">{{ repo.display_description|truncatewords:30 }}</p>
+                        
+                        {% if repo.primary_language %}
+                        <span class="language-badge">{{ repo.primary_language }}</span>
+                        {% endif %}
+                        
+                        {% if repo.topics %}
+                        <div class="mt-2">
+                            {% for topic in repo.topics|slice:":3" %}
+                            <span class="badge bg-secondary me-1">{{ topic }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="repo-stats mt-3">
+                            <span class="repo-stat">
+                                <i class="fas fa-star text-warning"></i> {{ repo.stars_count }}
+                            </span>
+                            <span class="repo-stat">
+                                <i class="fas fa-code-branch"></i> {{ repo.forks_count }}
+                            </span>
+                            <span class="repo-stat">
+                                <i class="far fa-eye"></i> {{ repo.watchers_count }}
+                            </span>
+                            {% if repo.open_issues_count > 0 %}
+                            <span class="repo-stat">
+                                <i class="fas fa-exclamation-circle"></i> {{ repo.open_issues_count }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mt-3">
+                            <a href="{{ repo.url }}" target="_blank" class="btn btn-sm btn-outline-dark">
+                                View on GitHub <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            {% if repo.homepage %}
+                            <a href="{{ repo.homepage }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-globe"></i> Website
+                            </a>
+                            {% endif %}
+                        </div>
+                        
+                        <p class="text-muted small mt-3 mb-0">
+                            <i class="far fa-clock"></i> Updated {{ repo.updated_at|date:"M d, Y" }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="lead">No repositories found.</p>
+                {% if user.is_staff %}
+                <a href="{% url 'github:sync_repositories' %}" class="btn btn-primary">
+                    <i class="fas fa-sync"></i> Sync from GitHub
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
